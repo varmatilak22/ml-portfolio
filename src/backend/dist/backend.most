@@ -1,0 +1,57 @@
+// Version: 1.0.0
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type Profile__901378260 =
+  {
+    bio : Text;
+    name : Text;
+    socialLinks : SocialLinks__678653785;
+    title : Text
+  };
+type ProjectId__478417951 = Nat;
+type ProjectId__661817938 = ProjectId__478417951;
+type Project__614212307 =
+  {
+    createdAt : Timestamp__624602616;
+    description : Text;
+    githubLink : Text;
+    id : ProjectId__661817938;
+    kaggleLink : Text;
+    tags : [Text];
+    thumbnailUrl : Text;
+    title : Text;
+    updatedAt : Timestamp__624602616;
+    videoUrl : Text
+  };
+type SocialLinks__678653785 =
+  {email : Text; github : Text; kaggle : Text; linkedin : Text};
+type Timestamp__301639476 = Int;
+type Timestamp__624602616 = Timestamp__301639476;
+type UserRole__1073662873 = {#admin; #guest; #user};
+actor {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1073662873>
+    };
+  stable nextProjectIdBox : {var value : Nat};
+  stable profileState : {var profile : ?Profile__901378260};
+  stable projectStore :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Project__614212307]];
+      var elementIndex : Nat__490723111
+    };
+  stable skillsState : {var skills : [Text]}
+};

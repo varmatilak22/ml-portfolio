@@ -1,0 +1,60 @@
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type Timestamp = int;
+type SocialLinks = 
+ record {
+   email: text;
+   github: text;
+   kaggle: text;
+   linkedin: text;
+ };
+type ProjectInput = 
+ record {
+   description: text;
+   githubLink: text;
+   kaggleLink: text;
+   tags: vec text;
+   thumbnailUrl: text;
+   title: text;
+   videoUrl: text;
+ };
+type ProjectId = nat;
+type Project = 
+ record {
+   createdAt: Timestamp;
+   description: text;
+   githubLink: text;
+   id: ProjectId;
+   kaggleLink: text;
+   tags: vec text;
+   thumbnailUrl: text;
+   title: text;
+   updatedAt: Timestamp;
+   videoUrl: text;
+ };
+type Profile = 
+ record {
+   bio: text;
+   name: text;
+   socialLinks: SocialLinks;
+   title: text;
+ };
+service : {
+  _initializeAccessControl: () -> ();
+  addProject: (input: ProjectInput) -> (Project);
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  deleteProject: (id: ProjectId) -> (bool);
+  getCallerUserRole: () -> (UserRole) query;
+  getProfile: () -> (opt Profile) query;
+  getProject: (id: ProjectId) -> (opt Project) query;
+  getProjects: () -> (vec Project) query;
+  getSkills: () -> (vec text) query;
+  isCallerAdmin: () -> (bool) query;
+  setProfile: (profile: Profile) -> ();
+  setSkills: (skills: vec text) -> ();
+  updateProject: (id: ProjectId, input: ProjectInput) -> (bool);
+}

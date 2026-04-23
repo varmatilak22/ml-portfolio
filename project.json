@@ -1,0 +1,27 @@
+{
+  "overview": "A personal ML/AI portfolio website showcasing projects with embedded video demos, a skills section, social links, and a password-protected admin dashboard for managing portfolio content dynamically.",
+  "features": [
+    "Hero section with ML/AI engineer branding",
+    "Project cards with embedded video demos",
+    "GitHub and Kaggle project links",
+    "ML/AI skills badges",
+    "Social links (LinkedIn, GitHub, Kaggle)",
+    "Password-protected admin dashboard",
+    "Add/edit/delete projects from admin",
+    "Manage skills and bio from admin",
+    "Dark/light mode toggle",
+    "Minimalistic design with bold typography and subtle animations",
+    "Fully responsive layout"
+  ],
+  "category": "portfolio",
+  "tags": [
+    "portfolio",
+    "machine-learning",
+    "ai",
+    "ml-engineer",
+    "projects-showcase",
+    "admin-dashboard",
+    "video-demos"
+  ],
+  "last_updated": "2026-04-23T05:55:45.650Z"
+}

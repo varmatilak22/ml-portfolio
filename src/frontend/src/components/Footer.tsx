@@ -88,6 +88,20 @@ export default function Footer() {
               Projects
             </Link>
             <Link
+              to="/blog"
+              className="hover:text-foreground transition-smooth"
+              data-ocid="footer.blog_link"
+            >
+              Blog
+            </Link>
+            <Link
+              to="/kaggle"
+              className="hover:text-foreground transition-smooth"
+              data-ocid="footer.kaggle_link"
+            >
+              Kaggle
+            </Link>
+            <Link
               to="/admin"
               className="hover:text-foreground transition-smooth"
               data-ocid="footer.admin_link"

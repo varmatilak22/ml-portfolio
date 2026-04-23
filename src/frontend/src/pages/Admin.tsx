@@ -1,4 +1,6 @@
 import Layout from "@/components/Layout";
+import { BlogTab } from "@/components/admin/BlogTab";
+import { KaggleTab } from "@/components/admin/KaggleTab";
 import { ProfileTab } from "@/components/admin/ProfileTab";
 import { ProjectsTab } from "@/components/admin/ProjectsTab";
 import { SkillsTab } from "@/components/admin/SkillsTab";
@@ -123,6 +125,20 @@ export default function Admin() {
               >
                 Profile
               </TabsTrigger>
+              <TabsTrigger
+                value="blog"
+                className="data-[state=active]:bg-card data-[state=active]:shadow-sm"
+                data-ocid="admin.blog_tab_trigger"
+              >
+                Blog
+              </TabsTrigger>
+              <TabsTrigger
+                value="kaggle"
+                className="data-[state=active]:bg-card data-[state=active]:shadow-sm"
+                data-ocid="admin.kaggle_tab_trigger"
+              >
+                Kaggle
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="projects">
@@ -133,6 +149,12 @@ export default function Admin() {
             </TabsContent>
             <TabsContent value="profile">
               <ProfileTab />
+            </TabsContent>
+            <TabsContent value="blog">
+              <BlogTab />
+            </TabsContent>
+            <TabsContent value="kaggle">
+              <KaggleTab />
             </TabsContent>
           </Tabs>
         </div>

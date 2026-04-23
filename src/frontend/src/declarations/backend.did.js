@@ -8,6 +8,49 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const BlogPostSource = IDL.Variant({
+  'rss' : IDL.Null,
+  'manual' : IDL.Null,
+});
+export const Timestamp = IDL.Int;
+export const BlogPostInput = IDL.Record({
+  'title' : IDL.Text,
+  'thumbnailUrl' : IDL.Opt(IDL.Text),
+  'source' : BlogPostSource,
+  'mediumUrl' : IDL.Text,
+  'tags' : IDL.Vec(IDL.Text),
+  'publishedAt' : Timestamp,
+  'summary' : IDL.Text,
+});
+export const BlogPostId = IDL.Nat;
+export const BlogPost = IDL.Record({
+  'id' : BlogPostId,
+  'title' : IDL.Text,
+  'thumbnailUrl' : IDL.Opt(IDL.Text),
+  'source' : BlogPostSource,
+  'mediumUrl' : IDL.Text,
+  'tags' : IDL.Vec(IDL.Text),
+  'publishedAt' : Timestamp,
+  'summary' : IDL.Text,
+});
+export const KaggleNotebookInput = IDL.Record({
+  'title' : IDL.Text,
+  'views' : IDL.Opt(IDL.Nat),
+  'votes' : IDL.Opt(IDL.Nat),
+  'tags' : IDL.Vec(IDL.Text),
+  'description' : IDL.Text,
+  'notebookUrl' : IDL.Text,
+});
+export const KaggleNotebookId = IDL.Nat;
+export const KaggleNotebook = IDL.Record({
+  'id' : KaggleNotebookId,
+  'title' : IDL.Text,
+  'views' : IDL.Opt(IDL.Nat),
+  'votes' : IDL.Opt(IDL.Nat),
+  'tags' : IDL.Vec(IDL.Text),
+  'description' : IDL.Text,
+  'notebookUrl' : IDL.Text,
+});
 export const ProjectInput = IDL.Record({
   'title' : IDL.Text,
   'githubLink' : IDL.Text,
@@ -18,7 +61,6 @@ export const ProjectInput = IDL.Record({
   'videoUrl' : IDL.Text,
 });
 export const ProjectId = IDL.Nat;
-export const Timestamp = IDL.Int;
 export const Project = IDL.Record({
   'id' : ProjectId,
   'title' : IDL.Text,
@@ -36,6 +78,21 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
+export const KaggleMedals = IDL.Record({
+  'bronze' : IDL.Nat,
+  'gold' : IDL.Nat,
+  'silver' : IDL.Nat,
+});
+export const KaggleStats = IDL.Record({
+  'bio' : IDL.Opt(IDL.Text),
+  'totalCompetitions' : IDL.Nat,
+  'username' : IDL.Text,
+  'totalNotebooks' : IDL.Nat,
+  'rank' : IDL.Opt(IDL.Text),
+  'totalDatasets' : IDL.Nat,
+  'profileUrl' : IDL.Text,
+  'medals' : KaggleMedals,
+});
 export const SocialLinks = IDL.Record({
   'linkedin' : IDL.Text,
   'email' : IDL.Text,
@@ -51,23 +108,77 @@ export const Profile = IDL.Record({
 
 export const idlService = IDL.Service({
   '_initializeAccessControl' : IDL.Func([], [], []),
+  'addBlogPost' : IDL.Func([BlogPostInput], [BlogPost], []),
+  'addKaggleNotebook' : IDL.Func([KaggleNotebookInput], [KaggleNotebook], []),
   'addProject' : IDL.Func([ProjectInput], [Project], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'deleteBlogPost' : IDL.Func([BlogPostId], [IDL.Bool], []),
+  'deleteKaggleNotebook' : IDL.Func([KaggleNotebookId], [IDL.Bool], []),
   'deleteProject' : IDL.Func([ProjectId], [IDL.Bool], []),
+  'getBlogPosts' : IDL.Func([], [IDL.Vec(BlogPost)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getKaggleNotebooks' : IDL.Func([], [IDL.Vec(KaggleNotebook)], ['query']),
+  'getKaggleStats' : IDL.Func([], [IDL.Opt(KaggleStats)], ['query']),
   'getProfile' : IDL.Func([], [IDL.Opt(Profile)], ['query']),
   'getProject' : IDL.Func([ProjectId], [IDL.Opt(Project)], ['query']),
   'getProjects' : IDL.Func([], [IDL.Vec(Project)], ['query']),
   'getSkills' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'setKaggleStats' : IDL.Func([KaggleStats], [], []),
   'setProfile' : IDL.Func([Profile], [], []),
   'setSkills' : IDL.Func([IDL.Vec(IDL.Text)], [], []),
+  'updateBlogPost' : IDL.Func([BlogPostId, BlogPostInput], [IDL.Bool], []),
+  'updateKaggleNotebook' : IDL.Func(
+      [KaggleNotebookId, KaggleNotebookInput],
+      [IDL.Bool],
+      [],
+    ),
   'updateProject' : IDL.Func([ProjectId, ProjectInput], [IDL.Bool], []),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const BlogPostSource = IDL.Variant({ 'rss' : IDL.Null, 'manual' : IDL.Null });
+  const Timestamp = IDL.Int;
+  const BlogPostInput = IDL.Record({
+    'title' : IDL.Text,
+    'thumbnailUrl' : IDL.Opt(IDL.Text),
+    'source' : BlogPostSource,
+    'mediumUrl' : IDL.Text,
+    'tags' : IDL.Vec(IDL.Text),
+    'publishedAt' : Timestamp,
+    'summary' : IDL.Text,
+  });
+  const BlogPostId = IDL.Nat;
+  const BlogPost = IDL.Record({
+    'id' : BlogPostId,
+    'title' : IDL.Text,
+    'thumbnailUrl' : IDL.Opt(IDL.Text),
+    'source' : BlogPostSource,
+    'mediumUrl' : IDL.Text,
+    'tags' : IDL.Vec(IDL.Text),
+    'publishedAt' : Timestamp,
+    'summary' : IDL.Text,
+  });
+  const KaggleNotebookInput = IDL.Record({
+    'title' : IDL.Text,
+    'views' : IDL.Opt(IDL.Nat),
+    'votes' : IDL.Opt(IDL.Nat),
+    'tags' : IDL.Vec(IDL.Text),
+    'description' : IDL.Text,
+    'notebookUrl' : IDL.Text,
+  });
+  const KaggleNotebookId = IDL.Nat;
+  const KaggleNotebook = IDL.Record({
+    'id' : KaggleNotebookId,
+    'title' : IDL.Text,
+    'views' : IDL.Opt(IDL.Nat),
+    'votes' : IDL.Opt(IDL.Nat),
+    'tags' : IDL.Vec(IDL.Text),
+    'description' : IDL.Text,
+    'notebookUrl' : IDL.Text,
+  });
   const ProjectInput = IDL.Record({
     'title' : IDL.Text,
     'githubLink' : IDL.Text,
@@ -78,7 +189,6 @@ export const idlFactory = ({ IDL }) => {
     'videoUrl' : IDL.Text,
   });
   const ProjectId = IDL.Nat;
-  const Timestamp = IDL.Int;
   const Project = IDL.Record({
     'id' : ProjectId,
     'title' : IDL.Text,
@@ -96,6 +206,21 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
+  const KaggleMedals = IDL.Record({
+    'bronze' : IDL.Nat,
+    'gold' : IDL.Nat,
+    'silver' : IDL.Nat,
+  });
+  const KaggleStats = IDL.Record({
+    'bio' : IDL.Opt(IDL.Text),
+    'totalCompetitions' : IDL.Nat,
+    'username' : IDL.Text,
+    'totalNotebooks' : IDL.Nat,
+    'rank' : IDL.Opt(IDL.Text),
+    'totalDatasets' : IDL.Nat,
+    'profileUrl' : IDL.Text,
+    'medals' : KaggleMedals,
+  });
   const SocialLinks = IDL.Record({
     'linkedin' : IDL.Text,
     'email' : IDL.Text,
@@ -111,17 +236,31 @@ export const idlFactory = ({ IDL }) => {
   
   return IDL.Service({
     '_initializeAccessControl' : IDL.Func([], [], []),
+    'addBlogPost' : IDL.Func([BlogPostInput], [BlogPost], []),
+    'addKaggleNotebook' : IDL.Func([KaggleNotebookInput], [KaggleNotebook], []),
     'addProject' : IDL.Func([ProjectInput], [Project], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'deleteBlogPost' : IDL.Func([BlogPostId], [IDL.Bool], []),
+    'deleteKaggleNotebook' : IDL.Func([KaggleNotebookId], [IDL.Bool], []),
     'deleteProject' : IDL.Func([ProjectId], [IDL.Bool], []),
+    'getBlogPosts' : IDL.Func([], [IDL.Vec(BlogPost)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getKaggleNotebooks' : IDL.Func([], [IDL.Vec(KaggleNotebook)], ['query']),
+    'getKaggleStats' : IDL.Func([], [IDL.Opt(KaggleStats)], ['query']),
     'getProfile' : IDL.Func([], [IDL.Opt(Profile)], ['query']),
     'getProject' : IDL.Func([ProjectId], [IDL.Opt(Project)], ['query']),
     'getProjects' : IDL.Func([], [IDL.Vec(Project)], ['query']),
     'getSkills' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'setKaggleStats' : IDL.Func([KaggleStats], [], []),
     'setProfile' : IDL.Func([Profile], [], []),
     'setSkills' : IDL.Func([IDL.Vec(IDL.Text)], [], []),
+    'updateBlogPost' : IDL.Func([BlogPostId, BlogPostInput], [IDL.Bool], []),
+    'updateKaggleNotebook' : IDL.Func(
+        [KaggleNotebookId, KaggleNotebookInput],
+        [IDL.Bool],
+        [],
+      ),
     'updateProject' : IDL.Func([ProjectId, ProjectInput], [IDL.Bool], []),
   });
 };

@@ -13,6 +13,8 @@ import { Suspense, lazy } from "react";
 const Home = lazy(() => import("@/pages/Home"));
 const Projects = lazy(() => import("@/pages/Projects"));
 const Admin = lazy(() => import("@/pages/Admin"));
+const Blog = lazy(() => import("@/pages/Blog"));
+const Kaggle = lazy(() => import("@/pages/Kaggle"));
 
 function PageLoader() {
   return (
@@ -67,10 +69,32 @@ const adminRoute = createRoute({
   ),
 });
 
+const blogRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/blog",
+  component: () => (
+    <Suspense fallback={<PageLoader />}>
+      <Blog />
+    </Suspense>
+  ),
+});
+
+const kaggleRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/kaggle",
+  component: () => (
+    <Suspense fallback={<PageLoader />}>
+      <Kaggle />
+    </Suspense>
+  ),
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   projectsRoute,
   adminRoute,
+  blogRoute,
+  kaggleRoute,
 ]);
 
 const router = createRouter({

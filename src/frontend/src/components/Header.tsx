@@ -12,6 +12,8 @@ interface HeaderProps {
 const navLinks = [
   { label: "Home", to: "/" },
   { label: "Projects", to: "/projects" },
+  { label: "Blog", to: "/blog" },
+  { label: "Kaggle", to: "/kaggle" },
 ];
 
 export default function Header({ isDark, onToggleTheme }: HeaderProps) {

@@ -89,7 +89,61 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface BlogPost {
+    id: BlogPostId;
+    title: string;
+    thumbnailUrl?: string;
+    source: BlogPostSource;
+    mediumUrl: string;
+    tags: Array<string>;
+    publishedAt: Timestamp;
+    summary: string;
+}
+export interface KaggleMedals {
+    bronze: bigint;
+    gold: bigint;
+    silver: bigint;
+}
 export type Timestamp = bigint;
+export interface KaggleNotebookInput {
+    title: string;
+    views?: bigint;
+    votes?: bigint;
+    tags: Array<string>;
+    description: string;
+    notebookUrl: string;
+}
+export interface BlogPostInput {
+    title: string;
+    thumbnailUrl?: string;
+    source: BlogPostSource;
+    mediumUrl: string;
+    tags: Array<string>;
+    publishedAt: Timestamp;
+    summary: string;
+}
+export interface SocialLinks {
+    linkedin: string;
+    email: string;
+    kaggle: string;
+    github: string;
+}
+export interface KaggleStats {
+    bio?: string;
+    totalCompetitions: bigint;
+    username: string;
+    totalNotebooks: bigint;
+    rank?: string;
+    totalDatasets: bigint;
+    profileUrl: string;
+    medals: KaggleMedals;
+}
+export interface Profile {
+    bio: string;
+    title: string;
+    socialLinks: SocialLinks;
+    name: string;
+}
 export interface ProjectInput {
     title: string;
     githubLink: string;
@@ -99,19 +153,18 @@ export interface ProjectInput {
     kaggleLink: string;
     videoUrl: string;
 }
-export interface SocialLinks {
-    linkedin: string;
-    email: string;
-    kaggle: string;
-    github: string;
-}
+export type BlogPostId = bigint;
 export type ProjectId = bigint;
-export interface Profile {
-    bio: string;
+export interface KaggleNotebook {
+    id: KaggleNotebookId;
     title: string;
-    socialLinks: SocialLinks;
-    name: string;
+    views?: bigint;
+    votes?: bigint;
+    tags: Array<string>;
+    description: string;
+    notebookUrl: string;
 }
+export type KaggleNotebookId = bigint;
 export interface Project {
     id: ProjectId;
     title: string;
@@ -124,6 +177,10 @@ export interface Project {
     kaggleLink: string;
     videoUrl: string;
 }
+export enum BlogPostSource {
+    rss = "rss",
+    manual = "manual"
+}
 export enum UserRole {
     admin = "admin",
     user = "user",
@@ -131,20 +188,30 @@ export enum UserRole {
 }
 export interface backendInterface {
     _initializeAccessControl(): Promise<void>;
+    addBlogPost(input: BlogPostInput): Promise<BlogPost>;
+    addKaggleNotebook(input: KaggleNotebookInput): Promise<KaggleNotebook>;
     addProject(input: ProjectInput): Promise<Project>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
+    deleteBlogPost(id: BlogPostId): Promise<boolean>;
+    deleteKaggleNotebook(id: KaggleNotebookId): Promise<boolean>;
     deleteProject(id: ProjectId): Promise<boolean>;
+    getBlogPosts(): Promise<Array<BlogPost>>;
     getCallerUserRole(): Promise<UserRole>;
+    getKaggleNotebooks(): Promise<Array<KaggleNotebook>>;
+    getKaggleStats(): Promise<KaggleStats | null>;
     getProfile(): Promise<Profile | null>;
     getProject(id: ProjectId): Promise<Project | null>;
     getProjects(): Promise<Array<Project>>;
     getSkills(): Promise<Array<string>>;
     isCallerAdmin(): Promise<boolean>;
+    setKaggleStats(stats: KaggleStats): Promise<void>;
     setProfile(profile: Profile): Promise<void>;
     setSkills(skills: Array<string>): Promise<void>;
+    updateBlogPost(id: BlogPostId, input: BlogPostInput): Promise<boolean>;
+    updateKaggleNotebook(id: KaggleNotebookId, input: KaggleNotebookInput): Promise<boolean>;
     updateProject(id: ProjectId, input: ProjectInput): Promise<boolean>;
 }
-import type { Profile as _Profile, Project as _Project, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
+import type { BlogPost as _BlogPost, BlogPostId as _BlogPostId, BlogPostInput as _BlogPostInput, BlogPostSource as _BlogPostSource, KaggleMedals as _KaggleMedals, KaggleNotebook as _KaggleNotebook, KaggleNotebookId as _KaggleNotebookId, KaggleNotebookInput as _KaggleNotebookInput, KaggleStats as _KaggleStats, Profile as _Profile, Project as _Project, Timestamp as _Timestamp, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _initializeAccessControl(): Promise<void> {
@@ -159,6 +226,34 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor._initializeAccessControl();
             return result;
+        }
+    }
+    async addBlogPost(arg0: BlogPostInput): Promise<BlogPost> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.addBlogPost(to_candid_BlogPostInput_n1(this._uploadFile, this._downloadFile, arg0));
+                return from_candid_BlogPost_n5(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.addBlogPost(to_candid_BlogPostInput_n1(this._uploadFile, this._downloadFile, arg0));
+            return from_candid_BlogPost_n5(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async addKaggleNotebook(arg0: KaggleNotebookInput): Promise<KaggleNotebook> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.addKaggleNotebook(to_candid_KaggleNotebookInput_n10(this._uploadFile, this._downloadFile, arg0));
+                return from_candid_KaggleNotebook_n12(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.addKaggleNotebook(to_candid_KaggleNotebookInput_n10(this._uploadFile, this._downloadFile, arg0));
+            return from_candid_KaggleNotebook_n12(this._uploadFile, this._downloadFile, result);
         }
     }
     async addProject(arg0: ProjectInput): Promise<Project> {
@@ -178,14 +273,42 @@ export class Backend implements backendInterface {
     async assignCallerUserRole(arg0: Principal, arg1: UserRole): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n1(this._uploadFile, this._downloadFile, arg1));
+                const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n15(this._uploadFile, this._downloadFile, arg1));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n1(this._uploadFile, this._downloadFile, arg1));
+            const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n15(this._uploadFile, this._downloadFile, arg1));
+            return result;
+        }
+    }
+    async deleteBlogPost(arg0: BlogPostId): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.deleteBlogPost(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.deleteBlogPost(arg0);
+            return result;
+        }
+    }
+    async deleteKaggleNotebook(arg0: KaggleNotebookId): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.deleteKaggleNotebook(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.deleteKaggleNotebook(arg0);
             return result;
         }
     }
@@ -203,46 +326,88 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async getBlogPosts(): Promise<Array<BlogPost>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getBlogPosts();
+                return from_candid_vec_n17(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getBlogPosts();
+            return from_candid_vec_n17(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getCallerUserRole(): Promise<UserRole> {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerUserRole();
-                return from_candid_UserRole_n3(this._uploadFile, this._downloadFile, result);
+                return from_candid_UserRole_n18(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerUserRole();
-            return from_candid_UserRole_n3(this._uploadFile, this._downloadFile, result);
+            return from_candid_UserRole_n18(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getKaggleNotebooks(): Promise<Array<KaggleNotebook>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getKaggleNotebooks();
+                return from_candid_vec_n20(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getKaggleNotebooks();
+            return from_candid_vec_n20(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getKaggleStats(): Promise<KaggleStats | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getKaggleStats();
+                return from_candid_opt_n21(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getKaggleStats();
+            return from_candid_opt_n21(this._uploadFile, this._downloadFile, result);
         }
     }
     async getProfile(): Promise<Profile | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getProfile();
-                return from_candid_opt_n5(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n24(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getProfile();
-            return from_candid_opt_n5(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n24(this._uploadFile, this._downloadFile, result);
         }
     }
     async getProject(arg0: ProjectId): Promise<Project | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getProject(arg0);
-                return from_candid_opt_n6(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n25(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getProject(arg0);
-            return from_candid_opt_n6(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n25(this._uploadFile, this._downloadFile, result);
         }
     }
     async getProjects(): Promise<Array<Project>> {
@@ -287,6 +452,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async setKaggleStats(arg0: KaggleStats): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.setKaggleStats(to_candid_KaggleStats_n26(this._uploadFile, this._downloadFile, arg0));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.setKaggleStats(to_candid_KaggleStats_n26(this._uploadFile, this._downloadFile, arg0));
+            return result;
+        }
+    }
     async setProfile(arg0: Profile): Promise<void> {
         if (this.processError) {
             try {
@@ -315,6 +494,34 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async updateBlogPost(arg0: BlogPostId, arg1: BlogPostInput): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateBlogPost(arg0, to_candid_BlogPostInput_n1(this._uploadFile, this._downloadFile, arg1));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateBlogPost(arg0, to_candid_BlogPostInput_n1(this._uploadFile, this._downloadFile, arg1));
+            return result;
+        }
+    }
+    async updateKaggleNotebook(arg0: KaggleNotebookId, arg1: KaggleNotebookInput): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateKaggleNotebook(arg0, to_candid_KaggleNotebookInput_n10(this._uploadFile, this._downloadFile, arg1));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateKaggleNotebook(arg0, to_candid_KaggleNotebookInput_n10(this._uploadFile, this._downloadFile, arg1));
+            return result;
+        }
+    }
     async updateProject(arg0: ProjectId, arg1: ProjectInput): Promise<boolean> {
         if (this.processError) {
             try {
@@ -330,16 +537,124 @@ export class Backend implements backendInterface {
         }
     }
 }
-function from_candid_UserRole_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
-    return from_candid_variant_n4(_uploadFile, _downloadFile, value);
+function from_candid_BlogPostSource_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _BlogPostSource): BlogPostSource {
+    return from_candid_variant_n9(_uploadFile, _downloadFile, value);
 }
-function from_candid_opt_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Profile]): Profile | null {
+function from_candid_BlogPost_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _BlogPost): BlogPost {
+    return from_candid_record_n6(_uploadFile, _downloadFile, value);
+}
+function from_candid_KaggleNotebook_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _KaggleNotebook): KaggleNotebook {
+    return from_candid_record_n13(_uploadFile, _downloadFile, value);
+}
+function from_candid_KaggleStats_n22(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _KaggleStats): KaggleStats {
+    return from_candid_record_n23(_uploadFile, _downloadFile, value);
+}
+function from_candid_UserRole_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
+    return from_candid_variant_n19(_uploadFile, _downloadFile, value);
+}
+function from_candid_opt_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [bigint]): bigint | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Project]): Project | null {
+function from_candid_opt_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_KaggleStats]): KaggleStats | null {
+    return value.length === 0 ? null : from_candid_KaggleStats_n22(_uploadFile, _downloadFile, value[0]);
+}
+function from_candid_opt_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Profile]): Profile | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_variant_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_opt_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Project]): Project | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_record_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    id: _KaggleNotebookId;
+    title: string;
+    views: [] | [bigint];
+    votes: [] | [bigint];
+    tags: Array<string>;
+    description: string;
+    notebookUrl: string;
+}): {
+    id: KaggleNotebookId;
+    title: string;
+    views?: bigint;
+    votes?: bigint;
+    tags: Array<string>;
+    description: string;
+    notebookUrl: string;
+} {
+    return {
+        id: value.id,
+        title: value.title,
+        views: record_opt_to_undefined(from_candid_opt_n14(_uploadFile, _downloadFile, value.views)),
+        votes: record_opt_to_undefined(from_candid_opt_n14(_uploadFile, _downloadFile, value.votes)),
+        tags: value.tags,
+        description: value.description,
+        notebookUrl: value.notebookUrl
+    };
+}
+function from_candid_record_n23(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    bio: [] | [string];
+    totalCompetitions: bigint;
+    username: string;
+    totalNotebooks: bigint;
+    rank: [] | [string];
+    totalDatasets: bigint;
+    profileUrl: string;
+    medals: _KaggleMedals;
+}): {
+    bio?: string;
+    totalCompetitions: bigint;
+    username: string;
+    totalNotebooks: bigint;
+    rank?: string;
+    totalDatasets: bigint;
+    profileUrl: string;
+    medals: KaggleMedals;
+} {
+    return {
+        bio: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.bio)),
+        totalCompetitions: value.totalCompetitions,
+        username: value.username,
+        totalNotebooks: value.totalNotebooks,
+        rank: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.rank)),
+        totalDatasets: value.totalDatasets,
+        profileUrl: value.profileUrl,
+        medals: value.medals
+    };
+}
+function from_candid_record_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    id: _BlogPostId;
+    title: string;
+    thumbnailUrl: [] | [string];
+    source: _BlogPostSource;
+    mediumUrl: string;
+    tags: Array<string>;
+    publishedAt: _Timestamp;
+    summary: string;
+}): {
+    id: BlogPostId;
+    title: string;
+    thumbnailUrl?: string;
+    source: BlogPostSource;
+    mediumUrl: string;
+    tags: Array<string>;
+    publishedAt: Timestamp;
+    summary: string;
+} {
+    return {
+        id: value.id,
+        title: value.title,
+        thumbnailUrl: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.thumbnailUrl)),
+        source: from_candid_BlogPostSource_n8(_uploadFile, _downloadFile, value.source),
+        mediumUrl: value.mediumUrl,
+        tags: value.tags,
+        publishedAt: value.publishedAt,
+        summary: value.summary
+    };
+}
+function from_candid_variant_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     admin: null;
 } | {
     user: null;
@@ -348,10 +663,116 @@ function from_candid_variant_n4(_uploadFile: (file: ExternalBlob) => Promise<Uin
 }): UserRole {
     return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
 }
-function to_candid_UserRole_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
-    return to_candid_variant_n2(_uploadFile, _downloadFile, value);
+function from_candid_variant_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    rss: null;
+} | {
+    manual: null;
+}): BlogPostSource {
+    return "rss" in value ? BlogPostSource.rss : "manual" in value ? BlogPostSource.manual : value;
 }
-function to_candid_variant_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): {
+function from_candid_vec_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_BlogPost>): Array<BlogPost> {
+    return value.map((x)=>from_candid_BlogPost_n5(_uploadFile, _downloadFile, x));
+}
+function from_candid_vec_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_KaggleNotebook>): Array<KaggleNotebook> {
+    return value.map((x)=>from_candid_KaggleNotebook_n12(_uploadFile, _downloadFile, x));
+}
+function to_candid_BlogPostInput_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: BlogPostInput): _BlogPostInput {
+    return to_candid_record_n2(_uploadFile, _downloadFile, value);
+}
+function to_candid_BlogPostSource_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: BlogPostSource): _BlogPostSource {
+    return to_candid_variant_n4(_uploadFile, _downloadFile, value);
+}
+function to_candid_KaggleNotebookInput_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: KaggleNotebookInput): _KaggleNotebookInput {
+    return to_candid_record_n11(_uploadFile, _downloadFile, value);
+}
+function to_candid_KaggleStats_n26(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: KaggleStats): _KaggleStats {
+    return to_candid_record_n27(_uploadFile, _downloadFile, value);
+}
+function to_candid_UserRole_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
+    return to_candid_variant_n16(_uploadFile, _downloadFile, value);
+}
+function to_candid_record_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    title: string;
+    views?: bigint;
+    votes?: bigint;
+    tags: Array<string>;
+    description: string;
+    notebookUrl: string;
+}): {
+    title: string;
+    views: [] | [bigint];
+    votes: [] | [bigint];
+    tags: Array<string>;
+    description: string;
+    notebookUrl: string;
+} {
+    return {
+        title: value.title,
+        views: value.views ? candid_some(value.views) : candid_none(),
+        votes: value.votes ? candid_some(value.votes) : candid_none(),
+        tags: value.tags,
+        description: value.description,
+        notebookUrl: value.notebookUrl
+    };
+}
+function to_candid_record_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    title: string;
+    thumbnailUrl?: string;
+    source: BlogPostSource;
+    mediumUrl: string;
+    tags: Array<string>;
+    publishedAt: Timestamp;
+    summary: string;
+}): {
+    title: string;
+    thumbnailUrl: [] | [string];
+    source: _BlogPostSource;
+    mediumUrl: string;
+    tags: Array<string>;
+    publishedAt: _Timestamp;
+    summary: string;
+} {
+    return {
+        title: value.title,
+        thumbnailUrl: value.thumbnailUrl ? candid_some(value.thumbnailUrl) : candid_none(),
+        source: to_candid_BlogPostSource_n3(_uploadFile, _downloadFile, value.source),
+        mediumUrl: value.mediumUrl,
+        tags: value.tags,
+        publishedAt: value.publishedAt,
+        summary: value.summary
+    };
+}
+function to_candid_record_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    bio?: string;
+    totalCompetitions: bigint;
+    username: string;
+    totalNotebooks: bigint;
+    rank?: string;
+    totalDatasets: bigint;
+    profileUrl: string;
+    medals: KaggleMedals;
+}): {
+    bio: [] | [string];
+    totalCompetitions: bigint;
+    username: string;
+    totalNotebooks: bigint;
+    rank: [] | [string];
+    totalDatasets: bigint;
+    profileUrl: string;
+    medals: _KaggleMedals;
+} {
+    return {
+        bio: value.bio ? candid_some(value.bio) : candid_none(),
+        totalCompetitions: value.totalCompetitions,
+        username: value.username,
+        totalNotebooks: value.totalNotebooks,
+        rank: value.rank ? candid_some(value.rank) : candid_none(),
+        totalDatasets: value.totalDatasets,
+        profileUrl: value.profileUrl,
+        medals: value.medals
+    };
+}
+function to_candid_variant_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): {
     admin: null;
 } | {
     user: null;
@@ -364,6 +785,17 @@ function to_candid_variant_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8
         user: null
     } : value == UserRole.guest ? {
         guest: null
+    } : value;
+}
+function to_candid_variant_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: BlogPostSource): {
+    rss: null;
+} | {
+    manual: null;
+} {
+    return value == BlogPostSource.rss ? {
+        rss: null
+    } : value == BlogPostSource.manual ? {
+        manual: null
     } : value;
 }
 export interface CreateActorOptions {

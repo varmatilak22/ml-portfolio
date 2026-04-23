@@ -4,9 +4,13 @@ import AccessControl "mo:caffeineai-authorization/access-control";
 import MixinAuthorization "mo:caffeineai-authorization/MixinAuthorization";
 import ProjectTypes "types/projects";
 import ProfileTypes "types/profile";
+import BlogTypes "types/blog";
+import KaggleTypes "types/kaggle";
 import ProjectsMixin "mixins/projects-api";
 import ProfileMixin "mixins/profile-api";
 import SkillsMixin "mixins/skills-api";
+import BlogMixin "mixins/blog-api";
+import KaggleMixin "mixins/kaggle-api";
 
 actor {
   let accessControlState = AccessControl.initState();
@@ -41,6 +45,17 @@ actor {
     ];
   };
   include SkillsMixin(accessControlState, skillsState);
+
+  // Blog state
+  let blogStore = List.empty<BlogTypes.BlogPost>();
+  let nextBlogPostIdBox = { var value = 0 };
+  include BlogMixin(accessControlState, blogStore, nextBlogPostIdBox);
+
+  // Kaggle state
+  let kaggleStatsState = { var stats : ?KaggleTypes.KaggleStats = null };
+  let kaggleNotebookStore = List.empty<KaggleTypes.KaggleNotebook>();
+  let nextKaggleNotebookIdBox = { var value = 0 };
+  include KaggleMixin(accessControlState, kaggleStatsState, kaggleNotebookStore, nextKaggleNotebookIdBox);
 
   // Seed 3 sample ML/AI projects on first deploy
   ignore do {

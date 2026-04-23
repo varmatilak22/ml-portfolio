@@ -1,8 +1,44 @@
 // Version: 1.0.0
+type BlogPostId__798580332 = Nat;
+type BlogPostSource__134139912 = {#manual; #rss};
+type BlogPost__72627970 =
+  {
+    id : BlogPostId__798580332;
+    mediumUrl : Text;
+    publishedAt : Timestamp__301639476;
+    source : BlogPostSource__134139912;
+    summary : Text;
+    tags : [Text];
+    thumbnailUrl : ?Text;
+    title : Text
+  };
 type Data__791452850<K, V> =
   {var count : Nat__490723111; kvs : [var ?(K, V)]};
 type Internal__8484328<K, V> =
   {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type KaggleMedals__305493377 = {bronze : Nat; gold : Nat; silver : Nat};
+type KaggleNotebookId__387800404 = Nat;
+type KaggleNotebook__369727401 =
+  {
+    description : Text;
+    id : KaggleNotebookId__387800404;
+    notebookUrl : Text;
+    tags : [Text];
+    title : Text;
+    views : ?Nat;
+    votes : ?Nat
+  };
+type KaggleStats__140291680 =
+  {
+    bio : ?Text;
+    medals : KaggleMedals__305493377;
+    profileUrl : Text;
+    rank : ?Text;
+    totalCompetitions : Nat;
+    totalDatasets : Nat;
+    totalNotebooks : Nat;
+    username : Text
+  };
 type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
 type Map__158565046<K, V> = Map__297112838<K, V>;
 type Map__297112838<K, V> =
@@ -45,6 +81,21 @@ actor {
       var adminAssigned : Bool;
       userRoles : Map__605269027<Principal, UserRole__1073662873>
     };
+  stable blogStore :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?BlogPost__72627970]];
+      var elementIndex : Nat__490723111
+    };
+  stable kaggleNotebookStore :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?KaggleNotebook__369727401]];
+      var elementIndex : Nat__490723111
+    };
+  stable kaggleStatsState : {var stats : ?KaggleStats__140291680};
+  stable nextBlogPostIdBox : {var value : Nat};
+  stable nextKaggleNotebookIdBox : {var value : Nat};
   stable nextProjectIdBox : {var value : Nat};
   stable profileState : {var profile : ?Profile__901378260};
   stable projectStore :

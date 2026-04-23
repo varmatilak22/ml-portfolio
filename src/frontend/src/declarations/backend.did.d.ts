@@ -10,6 +10,61 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface BlogPost {
+  'id' : BlogPostId,
+  'title' : string,
+  'thumbnailUrl' : [] | [string],
+  'source' : BlogPostSource,
+  'mediumUrl' : string,
+  'tags' : Array<string>,
+  'publishedAt' : Timestamp,
+  'summary' : string,
+}
+export type BlogPostId = bigint;
+export interface BlogPostInput {
+  'title' : string,
+  'thumbnailUrl' : [] | [string],
+  'source' : BlogPostSource,
+  'mediumUrl' : string,
+  'tags' : Array<string>,
+  'publishedAt' : Timestamp,
+  'summary' : string,
+}
+export type BlogPostSource = { 'rss' : null } |
+  { 'manual' : null };
+export interface KaggleMedals {
+  'bronze' : bigint,
+  'gold' : bigint,
+  'silver' : bigint,
+}
+export interface KaggleNotebook {
+  'id' : KaggleNotebookId,
+  'title' : string,
+  'views' : [] | [bigint],
+  'votes' : [] | [bigint],
+  'tags' : Array<string>,
+  'description' : string,
+  'notebookUrl' : string,
+}
+export type KaggleNotebookId = bigint;
+export interface KaggleNotebookInput {
+  'title' : string,
+  'views' : [] | [bigint],
+  'votes' : [] | [bigint],
+  'tags' : Array<string>,
+  'description' : string,
+  'notebookUrl' : string,
+}
+export interface KaggleStats {
+  'bio' : [] | [string],
+  'totalCompetitions' : bigint,
+  'username' : string,
+  'totalNotebooks' : bigint,
+  'rank' : [] | [string],
+  'totalDatasets' : bigint,
+  'profileUrl' : string,
+  'medals' : KaggleMedals,
+}
 export interface Profile {
   'bio' : string,
   'title' : string,
@@ -50,17 +105,30 @@ export type UserRole = { 'admin' : null } |
   { 'guest' : null };
 export interface _SERVICE {
   '_initializeAccessControl' : ActorMethod<[], undefined>,
+  'addBlogPost' : ActorMethod<[BlogPostInput], BlogPost>,
+  'addKaggleNotebook' : ActorMethod<[KaggleNotebookInput], KaggleNotebook>,
   'addProject' : ActorMethod<[ProjectInput], Project>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'deleteBlogPost' : ActorMethod<[BlogPostId], boolean>,
+  'deleteKaggleNotebook' : ActorMethod<[KaggleNotebookId], boolean>,
   'deleteProject' : ActorMethod<[ProjectId], boolean>,
+  'getBlogPosts' : ActorMethod<[], Array<BlogPost>>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getKaggleNotebooks' : ActorMethod<[], Array<KaggleNotebook>>,
+  'getKaggleStats' : ActorMethod<[], [] | [KaggleStats]>,
   'getProfile' : ActorMethod<[], [] | [Profile]>,
   'getProject' : ActorMethod<[ProjectId], [] | [Project]>,
   'getProjects' : ActorMethod<[], Array<Project>>,
   'getSkills' : ActorMethod<[], Array<string>>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'setKaggleStats' : ActorMethod<[KaggleStats], undefined>,
   'setProfile' : ActorMethod<[Profile], undefined>,
   'setSkills' : ActorMethod<[Array<string>], undefined>,
+  'updateBlogPost' : ActorMethod<[BlogPostId, BlogPostInput], boolean>,
+  'updateKaggleNotebook' : ActorMethod<
+    [KaggleNotebookId, KaggleNotebookInput],
+    boolean
+  >,
   'updateProject' : ActorMethod<[ProjectId, ProjectInput], boolean>,
 }
 export declare const idlService: IDL.ServiceClass;

@@ -43,18 +43,93 @@ type Profile =
    socialLinks: SocialLinks;
    title: text;
  };
+type KaggleStats = 
+ record {
+   bio: opt text;
+   medals: KaggleMedals;
+   profileUrl: text;
+   rank: opt text;
+   totalCompetitions: nat;
+   totalDatasets: nat;
+   totalNotebooks: nat;
+   username: text;
+ };
+type KaggleNotebookInput = 
+ record {
+   description: text;
+   notebookUrl: text;
+   tags: vec text;
+   title: text;
+   views: opt nat;
+   votes: opt nat;
+ };
+type KaggleNotebookId = nat;
+type KaggleNotebook = 
+ record {
+   description: text;
+   id: KaggleNotebookId;
+   notebookUrl: text;
+   tags: vec text;
+   title: text;
+   views: opt nat;
+   votes: opt nat;
+ };
+type KaggleMedals = 
+ record {
+   bronze: nat;
+   gold: nat;
+   silver: nat;
+ };
+type BlogPostSource = 
+ variant {
+   manual;
+   rss;
+ };
+type BlogPostInput = 
+ record {
+   mediumUrl: text;
+   publishedAt: Timestamp;
+   source: BlogPostSource;
+   summary: text;
+   tags: vec text;
+   thumbnailUrl: opt text;
+   title: text;
+ };
+type BlogPostId = nat;
+type BlogPost = 
+ record {
+   id: BlogPostId;
+   mediumUrl: text;
+   publishedAt: Timestamp;
+   source: BlogPostSource;
+   summary: text;
+   tags: vec text;
+   thumbnailUrl: opt text;
+   title: text;
+ };
 service : {
   _initializeAccessControl: () -> ();
+  addBlogPost: (input: BlogPostInput) -> (BlogPost);
+  addKaggleNotebook: (input: KaggleNotebookInput) -> (KaggleNotebook);
   addProject: (input: ProjectInput) -> (Project);
   assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  deleteBlogPost: (id: BlogPostId) -> (bool);
+  deleteKaggleNotebook: (id: KaggleNotebookId) -> (bool);
   deleteProject: (id: ProjectId) -> (bool);
+  getBlogPosts: () -> (vec BlogPost) query;
   getCallerUserRole: () -> (UserRole) query;
+  getKaggleNotebooks: () -> (vec KaggleNotebook) query;
+  getKaggleStats: () -> (opt KaggleStats) query;
   getProfile: () -> (opt Profile) query;
   getProject: (id: ProjectId) -> (opt Project) query;
   getProjects: () -> (vec Project) query;
   getSkills: () -> (vec text) query;
   isCallerAdmin: () -> (bool) query;
+  setKaggleStats: (stats: KaggleStats) -> ();
   setProfile: (profile: Profile) -> ();
   setSkills: (skills: vec text) -> ();
+  updateBlogPost: (id: BlogPostId, input: BlogPostInput) -> (bool);
+  updateKaggleNotebook: (id: KaggleNotebookId, input: KaggleNotebookInput) ->
+   (bool);
   updateProject: (id: ProjectId, input: ProjectInput) -> (bool);
 }
